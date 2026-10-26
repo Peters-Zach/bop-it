@@ -1,0 +1,14 @@
+# Local peer feedback
+Peer Evaluation*
+
+# Temporary and system files
+~$*
+*.tmp
+.DS_Store
+Thumbs.db
+tmp/
+
+# Local configuration
+.env
+.env.*
+!.env.example
