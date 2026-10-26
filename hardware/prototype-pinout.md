@@ -1,6 +1,6 @@
 # Basic prototyping pinout
 
-I'm using **one XIAO ESP32S3 for the book and one for the wand**. Both are in the DigiKey BOM, and I'll keep the larger DevKitC boards as spares. We already have the fixed resistors needed for the FSR divider.
+I'm using **one XIAO ESP32S3 for the book and one for the wand**. The larger DevKitC boards will stay as spares. The wand's FSR will connect through a fixed-resistor voltage divider.
 
 The basic build is:
 
@@ -11,7 +11,7 @@ I'll start with the Learn, Charge and Cast actions from the [project proposal](.
 
 ## Book: XIAO ESP32S3
 
-I'm using the standard XIAO ESP32S3 from the BOM. **D labels identify board pads; GPIO numbers are used in the code.** All MCU signals use 3.3V logic. [XIAO pin reference](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/).
+**D labels identify board pads; GPIO numbers are used in the code.** All MCU signals use 3.3V logic. This pinout is for the standard XIAO ESP32S3. [XIAO pin reference](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/).
 
 | Function | XIAO pad | GPIO | Connect to |
 | --- | --- | --- | --- |
@@ -71,7 +71,7 @@ The wand only needs **three external signal pins**: two for motion and one for s
                          |
                       D0 / GPIO1
 
-I'll use one of the fixed resistors we already have and record its value when setting the squeeze threshold. More force reduces FSR resistance and raises the voltage at D0. I'll configure D0 as an analog input with maximum attenuation and no internal pull-up, then compare released and squeezed readings. Strong force may saturate the ADC near its upper range. [FSR divider reference](https://learn.adafruit.com/force-sensitive-resistor-fsr/using-an-fsr).
+I'll choose the divider resistance and squeeze threshold during testing. More force reduces FSR resistance and raises the voltage at D0. I'll configure D0 as an analog input with maximum attenuation and no internal pull-up, then compare released and squeezed readings. Strong force may saturate the ADC near its upper range. [FSR divider reference](https://learn.adafruit.com/force-sensitive-resistor-fsr/using-an-fsr).
 
 I'll use the **LSM6DSOX #4438** at **0x6A** for Cast gestures, with SDA=GPIO5 and SCL=GPIO6. I'll poll it in the code, so no interrupt pin is needed. The other wand signal pads can stay unused for now. [IMU pinout](https://learn.adafruit.com/lsm6dsox-and-ism330dhc-6-dof-imu/pinouts).
 
@@ -79,7 +79,7 @@ If I add wand vibration, the **DRV2605L #2305** can share SDA/SCL at **0x5A**, p
 
 ## Power and optional BOM parts
 
-- I'll power each XIAO through USB while testing and check that I have the cables and jumper wires needed for the build. Grounds stay common within each unit, and the two boards' 3.3V and 5V rails stay separate. Never apply 5V to a GPIO or feed external power into a board while USB is powering it. [XIAO power reference](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/).
+- I'll power each XIAO through USB while testing. Grounds stay common within each unit, and the two boards' 3.3V and 5V rails stay separate. Never apply 5V to a GPIO or feed external power into a board while USB is powering it. [XIAO power reference](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/).
 - I'll keep the **encoder, extra FSRs/flex sensor, slide switches and DevKitC boards** for later experiments.
 - **VL53L1X #3967 (0x29)** and **MCP23017 #5346 (0x20)** can join the book's existing D4/D5 bus at 3.3V if distance sensing or more digital inputs are wanted. Polling needs no extra MCU signal pins. On the MCP23017 use A0-A6/B0-B6 for inputs; leave A7/B7 unused because of the documented input/SDA issue. [Distance sensor](https://learn.adafruit.com/adafruit-vl53l1x/pinouts), [expander](https://learn.adafruit.com/adafruit-mcp23017-i2c-gpio-expander/pinouts).
 - **TMAG5273 Hall boards** are an I2C alternative to the analog DFR1132 sensors. One can share D4/D5 directly at **0x35**. For all four at their default address, add **PCA9548 #5626 (0x70)** on D4/D5 and connect one Hall board per channel 0-3. Power at 3.3V, set mux Vlogic to V+, and select exactly one channel at a time. [SparkFun guide](https://docs.sparkfun.com/SparkFun_Qwiic_Hall_Effect_Sensor_TMAG5273/print_view/), [mux](https://learn.adafruit.com/adafruit-pca9548-8-channel-stemma-qt-qwiic-i2c-multiplexer/pinouts).
