@@ -1,13 +1,11 @@
 # Basic prototyping pinout
 
-I'm using **one XIAO ESP32S3 for the book and one for the wand**. The larger DevKitC boards will stay as spares. The wand's FSR will connect through a fixed-resistor voltage divider.
+I'm using one XIAO ESP32S3 for the book and one for the wand. The larger DevKitC boards will stay as spares. The wand's FSR will connect through a fixed-resistor voltage divider.
 
 The basic build is:
 
 - **Book:** XIAO, page sensor, OLED, start button, MAX98357A amplifier, speaker and the XIAO's built-in status LED.
 - **Wand:** XIAO, LSM6DSOX motion sensor and one FSR with a fixed resistor.
-
-I'll start with the Learn, Charge and Cast actions from the [project proposal](../docs/Bop%20It%20Final%20Proposal.docx). Vibration feedback and additional page sensors can be added later. The basic setup doesn't need the encoder, GPIO expander or I2C multiplexer.
 
 ## Book: XIAO ESP32S3
 
@@ -16,11 +14,11 @@ I'll start with the Learn, Charge and Cast actions from the [project proposal](.
 | Function | XIAO pad | GPIO | Connect to |
 | --- | --- | --- | --- |
 | Page Hall sensor 1 | D0 | GPIO1 | DFR1132 #1 A output |
-| Optional page Hall sensor 2 | D1 | GPIO2 | DFR1132 #2 A output |
-| Optional page Hall sensor 3 | D3 | GPIO4 | DFR1132 #3 A output |
+| (Optional) page Hall sensor 2 | D1 | GPIO2 | DFR1132 #2 A output |
+| (Optional) page Hall sensor 3 | D3 | GPIO4 | DFR1132 #3 A output |
 | OLED I2C data | D4 | GPIO5 | OLED Data / SDA |
 | OLED I2C clock | D5 | GPIO6 | OLED Clk / SCL |
-| Start button | D7 | GPIO44 | Tactile button #367 between D7 and GND |
+| Start button/Page hinge sensor | D7 | GPIO44 | Tactile button or sensor between D7 and GND |
 | Audio bit clock | D8 | GPIO7 | MAX98357A BCLK |
 | Audio word clock | D9 | GPIO8 | MAX98357A LRC |
 | Audio data out | D10 | GPIO9 | MAX98357A DIN |
@@ -79,9 +77,8 @@ If I add wand vibration, the **DRV2605L #2305** can share SDA/SCL at **0x5A**, p
 
 ## Power and optional BOM parts
 
-- I'll power each XIAO through USB while testing. Grounds stay common within each unit, and the two boards' 3.3V and 5V rails stay separate. Never apply 5V to a GPIO or feed external power into a board while USB is powering it. [XIAO power reference](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/).
-- I'll keep the **encoder, extra FSRs/flex sensor, slide switches and DevKitC boards** for later experiments.
+- Power each XIAO through USB while testing. Grounds stay common within each unit, and the two boards' 3.3V and 5V rails stay separate. Never apply 5V to a GPIO or feed external power into a board while USB is powering it. [XIAO power reference](https://wiki.seeedstudio.com/xiao_esp32s3_getting_started/).
+- keep the **encoder, extra FSRs/flex sensor, slide switches and DevKitC boards** for later experiments.
 - **VL53L1X #3967 (0x29)** and **MCP23017 #5346 (0x20)** can join the book's existing D4/D5 bus at 3.3V if distance sensing or more digital inputs are wanted. Polling needs no extra MCU signal pins. On the MCP23017 use A0-A6/B0-B6 for inputs; leave A7/B7 unused because of the documented input/SDA issue. [Distance sensor](https://learn.adafruit.com/adafruit-vl53l1x/pinouts), [expander](https://learn.adafruit.com/adafruit-mcp23017-i2c-gpio-expander/pinouts).
 - **TMAG5273 Hall boards** are an I2C alternative to the analog DFR1132 sensors. One can share D4/D5 directly at **0x35**. For all four at their default address, add **PCA9548 #5626 (0x70)** on D4/D5 and connect one Hall board per channel 0-3. Power at 3.3V, set mux Vlogic to V+, and select exactly one channel at a time. [SparkFun guide](https://docs.sparkfun.com/SparkFun_Qwiic_Hall_Effect_Sensor_TMAG5273/print_view/), [mux](https://learn.adafruit.com/adafruit-pca9548-8-channel-stemma-qt-qwiic-i2c-multiplexer/pinouts).
-- **DFPlayer DFR0299** is an alternative audio approach, not part of this pin assignment. Its microSD/TF card is not listed in the BOMs. Do not connect DFPlayer and MAX98357A outputs to the same speaker. [DFPlayer guide](https://wiki.dfrobot.com/dfr0299).
-- I'll leave both **MPM3610 #4739** converters out of the USB setup. Their 5V output needs 6-21V input, so I'll revisit them when choosing a separate power supply. [Converter](https://www.adafruit.com/product/4739).
+- **DFPlayer DFR0299** is an alternative audio approach, not part of this pin assignment.
