@@ -1,0 +1,2 @@
+Unmodified DFRobotDFPlayerMini library. Source: https://github.com/DFRobot/DFRobotDFPlayerMini/tree/47c014938318f99f5b48194b329ef48931d1d175
+Copyright DFRobot, 2016. GNU Lesser General Public License; see source headers and README.md.
